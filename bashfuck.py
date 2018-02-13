@@ -49,7 +49,7 @@ def encode(cmd):
     bash = '${!#}'
     cmd = "bash -c '{}'".format(cmd)
     exp = "%s<<<%s" % (bash, arg_to_cmd(split(cmd)))
-    log.info('result: ' + exp)
+    log.info('result ({} byte): {}'.format(len(exp), exp))
     return exp
 
 def execute(bashfuck):
