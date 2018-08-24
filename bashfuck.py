@@ -1,35 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys, os
-from pwn import *
 import argparse
+import subprocess
 
 n = dict()
 n[0] = '$#'
 n[1] = '${##}'
 n[2] = '$(({n1}<<{n1}))'.format(n1=n[1])
 n[3] = '$(({n2}#{n1}{n1}))'.format(n2=n[2], n1=n[1])
-n[4] = '$(({n2}#{n1}{n0}{n0}))'.format(n2=n[2], n1=n[1], n0=n[0])
+n[4] = '$(({n1}<<{n2}))'.format(n2=n[2], n1=n[1])
 n[5] = '$(({n2}#{n1}{n0}{n1}))'.format(n2=n[2], n1=n[1], n0=n[0])
 n[6] = '$(({n2}#{n1}{n1}{n0}))'.format(n2=n[2], n1=n[1], n0=n[0])
 n[7] = '$(({n2}#{n1}{n1}{n1}))'.format(n2=n[2], n1=n[1])
 
-def split(cmd):
-    argv = []
-    token = ''
-    quote = False
-    for c in cmd:
-        if c == ' ' and not quote:
-            argv.append(token)
-            token = ''
-        elif c == '\'':
-            quote = not quote
-        else:
-            token += c
-    argv.append(token)
-    return argv
-
 def str_to_oct(cmd):
+    """
+    Converts a string to its octal representation, enclosed in: $\'STR\'
+    """
     s = "$\\'"
     for _ in cmd:
         o = ('%s' % (oct(ord(_)).lstrip('0'))).rjust(3, '0')
@@ -39,28 +27,31 @@ def str_to_oct(cmd):
     return s
 
 def arg_to_cmd(arg):
+    """
+    Given an array of strings returns the octal representation of every single string, wrapped in '{}' and separated by ','
+    """
     cmd = '{'
     cmd += ','.join(str_to_oct(_) for _ in arg)
-    cmd += ',}'
+    cmd += '}'
     return cmd
 
 def encode(cmd):
-    log.info('cmd: `{}`'.format(cmd))
+    """
+    Given a command returns the bashfuck'd version of it
+    """
+    print('cmd: `{}`'.format(cmd))
     bash = '${!#}'
-    cmd = "bash -c '{}'".format(cmd)
-    exp = "%s<<<%s" % (bash, arg_to_cmd(split(cmd)))
-    log.info('result ({} byte): {}'.format(len(exp), exp))
-    return exp
+    tmp = ['bash','-c',cmd]
+    payload = "{bash}<<<{cmd}".format(bash=bash,cmd=arg_to_cmd(tmp))
+    print('result ({} byte): {}'.format(len(payload), payload))
+    return payload
 
 def execute(bashfuck):
-    with context.local(log_level='ERROR'):
-        r = process('/bin/bash')
-    r.sendline(bashfuck)
-    r.sendline('echo GGGGGGGG; exit')
-    log.info(r.recvuntil('GGGGGGGG', drop=True).strip())
-    with context.local(log_level='ERROR'):
-        r.close()
-
+    """
+    Runs a bashfuck'd command
+    """
+    p = subprocess.Popen(['/bin/bash','-c',bashfuck])
+    p.communicate()    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog=sys.argv[0],
