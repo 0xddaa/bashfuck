@@ -35,14 +35,17 @@ def arg_to_cmd(arg):
     cmd += '}'
     return cmd
 
-def encode(cmd):
+def encode(cmd,bash=False):
     """
     Given a command returns the bashfuck'd version of it
     """
     print('cmd: `{}`'.format(cmd))
-    bash = '${!#}'
+    if bash:
+        shell = 'bash'
+    else:
+        shell = '${!#}'
     tmp = ['bash','-c',cmd]
-    payload = "{bash}<<<{cmd}".format(bash=bash,cmd=arg_to_cmd(tmp))
+    payload = "{shell}<<<{cmd}".format(shell=shell,cmd=arg_to_cmd(tmp))
     print('result ({} byte): {}'.format(len(payload), payload))
     return payload
 
@@ -58,9 +61,9 @@ if __name__ == '__main__':
             description="encode a bash command with charset $,(,),#,!,{,},<,\\,'")
     parser.add_argument('cmd')
     parser.add_argument('-t', '--test', action='store_true', help='test bashfuck and output result')
+    parser.add_argument('-b', '--bash', action='store_true', help='leaves the default bash string using [bash] chars, but avoids the usage of the "!" and uses one byte less. always works.')
     args = parser.parse_args()
 
+    payload = encode(args.cmd,args.bash)
     if args.test:
-        execute(encode(args.cmd))
-    else:
-        encode(args.cmd)
+        execute(payload)
