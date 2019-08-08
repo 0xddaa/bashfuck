@@ -1,6 +1,8 @@
 # BashFuck!
 BashFuck is an esoteric and educational programming style based on the atomic parts of Bash. It uses only 10 different characters to write and execute code.
 
+![BashFuck example](bashfuck.png)
+
 The current charset used is:
 - $
 - (
