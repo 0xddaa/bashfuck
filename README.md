@@ -1,22 +1,15 @@
 # BashFuck!
-BashFuck is an esoteric and educational programming style based on the atomic parts of Bash. It uses only 10 different characters to write and execute code.
+BashFuck is an esoteric and educational programming style based on the atomic parts of Bash.
+It uses only 11 different characters to write and execute code.
 
-The current charset used is:
-- $
-- (
-- )
-- \#
-- !
-- {
-- }
-- <
-- \
-- '
+![BashFuck example](bashfuck.png)
+
+The current charset used is: `$`, `(`, `)`, `#`, `!`, `{`, `}`, `<`, `\ `, `'`, `,`
 
 ```
-usage: bashfuck.py [-h] [-t] [-b] cmd
+usage: bashfuck.sh [-h] [-t] [-b] cmd
 
-encode a bash command with charset $,(,),#,!,{,},<,\,'
+encode a bash command with charset $()#!{}<\',
 
 positional arguments:
   cmd
