@@ -20,7 +20,7 @@ def str_to_oct(cmd):
     """
     s = "$\\'"
     for _ in cmd:
-        o = ('%s' % (oct(ord(_)).lstrip('0'))).rjust(3, '0')
+        o = ('%s' % (oct(ord(_)).lstrip('0o'))).rjust(3, '0')
         e = '\\\\' + ''.join(n[int(d)] for d in o)
         s += e
     s += "\\'"
