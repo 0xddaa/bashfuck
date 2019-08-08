@@ -14,7 +14,7 @@ The current charset used is:
 - '
 
 ```
-usage: bashfuck.py [-h] [-t] [-b] cmd
+usage: bashfuck.sh [-h] [-t] [-b] cmd
 
 encode a bash command with charset $,(,),#,!,{,},<,\,'
 
