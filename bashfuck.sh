@@ -5,7 +5,7 @@ usage(){
 }
 
 _help() {
-    echo "encode a bash command with charset $,(,),#,!,{,},<,\,'" >&2
+    echo "encode a bash command with charset $()#!{}<\'," >&2
     echo "" >&2
     echo "positional arguments:" >&2
     echo "  cmd" >&2
